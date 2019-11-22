@@ -17,9 +17,9 @@ dotenv.config();
 export default {
     ENVIROMENT: process.env.NODE_ENV || 'development',
     HTTPS_OPTIONS: {
-        key: readFileSync(join(rootpath.path, '/security/cert.key') || '/etc/letsencrypt/live/health.damascus-engineering.com/privkey.pem', 'utf8' || 'null'),
-        cert: readFileSync(join(rootpath.path, '/security/cert.pem') || '/etc/letsencrypt/live/health.damascus-engineering.com/cert.pem', 'utf8' || 'null'),
-        ca: readFileSync('/etc/letsencrypt/live/health.damascus-engineering.com/chain.pem', 'utf8' || 'null'),
+        key: readFileSync('/etc/letsencrypt/live/health.damascus-engineering.com/privkey.pem', 'utf8'),
+        cert: readFileSync('/etc/letsencrypt/live/health.damascus-engineering.com/cert.pem', 'utf8'),
+        ca: readFileSync('/etc/letsencrypt/live/health.damascus-engineering.com/chain.pem', 'utf8'),
         passphrase: process.env.SSL_PASSPHRASE || 'null'
     },
     ENCRYPT_KEY: process.env.ENCRYPT_KEY || 'null',
