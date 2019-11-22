@@ -1,0 +1,17 @@
+[req]
+distinguished_name = req_distinguished_name
+x509_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+C = MX
+ST = Chihuahua
+L = Chihuahua
+O = Damascus Mexico Group
+OU = Microservices
+CN = *.damascusmxlocal.com
+[v3_req]
+keyUsage = critical, digitalSignature, keyAgreement
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = api.damascusmxlocal.com

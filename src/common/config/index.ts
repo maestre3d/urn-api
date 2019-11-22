@@ -8,10 +8,19 @@
  * @description Stores all enviroment const
  */
 import dotenv from 'dotenv';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import rootpath from 'app-root-path';
+
 dotenv.config();
 
 export default {
     ENVIROMENT: process.env.NODE_ENV || 'development',
+    HTTPS_OPTIONS: {
+        key: readFileSync(join(rootpath.path, '/security/cert.key')),
+        cert: readFileSync(join(rootpath.path, '/security/cert.pem')),
+        passphrase: process.env.SSL_PASSPHRASE || 'null'
+    },
     ENCRYPT_KEY: process.env.ENCRYPT_KEY || 'null',
     EXPRESS_PORT: process.env.PORT || 5000,
     db: {
