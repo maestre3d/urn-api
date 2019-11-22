@@ -20,12 +20,12 @@ const controller: IUserController = nebulaContainer.get<IUserController>(TYPES.U
 
 api.route('/user')
 .post(controller.Create)
-.get(isAuthenticated, controller.GetAll);
+.get(controller.GetAll);
 
 api.route('/user/:id')
 .put(isAuthenticated, controller.Update)
 .delete(isAuthenticated, isInRole(['ROLE_ADMIN', 'ROLE_SUPPORT']), controller.Delete)
-.get(isAuthenticated, controller.GetById);
+.get(controller.GetById);
 
 // Auth
 api.route('/account/user').post(controller.LogIn);
