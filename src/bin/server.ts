@@ -38,8 +38,8 @@ if ( cluster.isMaster ) {
 } else {
     sequelize.authenticate()
     .then(() => {
-        // https.createServer(Config.HTTPS_OPTIONS, app).listen(PORT, () => { console.log(`Server running on port ${PORT}`); });
-        app.listen( PORT, () => { console.log(`Server running on port ${PORT}`); });
+        https.createServer(Config.HTTPS_OPTIONS, app).listen(PORT, () => { console.log(`Server running on port ${PORT}`); });
+        // app.listen( PORT, () => { console.log(`Server running on port ${PORT}`); });
     })
     .catch( e => {
         console.error(e.stack);

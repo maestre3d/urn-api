@@ -8,10 +8,10 @@ ST = Chihuahua
 L = Chihuahua
 O = Damascus Mexico Group
 OU = Microservices
-CN = *.damascusmxlocal.com
+CN = damascus-engineering.com
 [v3_req]
 keyUsage = critical, digitalSignature, keyAgreement
 extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = api.damascusmxlocal.com
+DNS.1 = *.damascus-engineering.com
