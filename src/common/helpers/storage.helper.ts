@@ -11,7 +11,6 @@ import { IStorageHelper } from "../../core/helpers/storage.helper";
 import { injectable } from "inversify";
 
 import fs from 'fs';
-import path from 'path';
 
 @injectable()
 export default class StorageHelper implements IStorageHelper {

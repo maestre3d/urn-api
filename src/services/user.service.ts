@@ -8,7 +8,7 @@
  * @description Handles all user operations
  */
 
-import { NOT_FOUND, APP_NAME, EMAIL_SUPPORT, FILE_ERROR, FILE_INVALID_EXTENSION, FILE_DELETE_ERROR } from "../common/config/app.config";
+import { NOT_FOUND, APP_NAME, EMAIL_SUPPORT, FILE_DELETE_ERROR } from "../common/config/app.config";
 
 // Interfaces
 import IUserRepository from "../core/repositories/user.repository";
@@ -56,12 +56,10 @@ export default class UserService implements IUserService {
             const cipherText = await bcrypt.hash(payload.password, 10);
 
             const user: IUser = {
-                username: payload.username.toLowerCase(),
                 password: cipherText,
                 email: payload.email.toLowerCase(),
                 name: payload.name,
                 surname: payload.surname,
-                country: payload.country.toLowerCase()
             };
     
             return UserService._userRepository.Create(user);

@@ -168,13 +168,11 @@ export class AuthService implements IAuthService {
                     if (provider === 'facebook') custom_image = `https://graph.facebook.com/${profile.id}/picture?type=large`;
                     
                     const newUser: IUser = {
-                        username: SHA256(profile.id).toString().substring(0, 25),
                         password: await bcrypt.hash(SHA256(profile.id).toString().substring(0, 10), 10),
                         email: profile.emails[0].value,
                         name: profile.name.givenName,
                         surname: profile.name.familyName,
                         image: custom_image || profile.photos[0].value,
-                        country: 'us',
                         confirmed: true,
                         domain: provider,
                         oauth_id: profile.id
@@ -184,6 +182,7 @@ export class AuthService implements IAuthService {
                         const userCreated: IUser = await AuthService._userRepository.Create(newUser);
 
                         if ( userCreated ) {
+                            /*
                             // Send email
                             const message = `Hello, ${newUser.name}.\n\nYour account has been created using ${provider}.\nHere you got your temporal credentials for legacy log in:\n` +
                             `Username: ${newUser.username}\n`+
@@ -192,7 +191,7 @@ export class AuthService implements IAuthService {
 
                             AuthService._mailHelper.sendMail([userCreated.email], APP_NAME.toLowerCase(), `Welcome to ${APP_NAME}!`, message, APP_NAME )
                             .then(success => success)
-                            .catch(e => e);
+                            .catch(e => e);*/
 
 
                             const token: IToken = {
