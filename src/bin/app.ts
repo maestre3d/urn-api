@@ -9,7 +9,7 @@
  */
 
 // Required libs
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import compression  from 'compression';
 import * as bodyParser from 'body-parser';
 import morgan from 'morgan';
@@ -24,6 +24,7 @@ import { nebulaContainer } from '../common/config/inversify.config';
 import { IPassportConfig } from '../core/config/passport.interface';
 import { TYPES } from '../common/config/types';
 import ErrorHelper from '../common/helpers/error.helper';
+import Headers from '../middlewares/headers.middleware';
 
 // Const
 const app = express();
@@ -59,14 +60,7 @@ app.use(lusca.xssProtection(true));
 
 // CORS
 // TODO - Change public policy to AWS Cloudfront/VPC
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-Width, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT, OPTIONS');
-    res.header('Allow', 'GET, POST, DELETE, PUT, OPTIONS');
-
-    next();
-});
+app.use(Headers);
 
 // Routes
 app.use(Routes);
