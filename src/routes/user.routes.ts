@@ -27,6 +27,13 @@ api.route('/user/:id')
 .delete(isAuthenticated, isInRole(['ROLE_ADMIN', 'ROLE_SUPPORT']), controller.Delete)
 .get(controller.GetById);
 
+// Business Logic
+// Activate Account
+api.route('/account/info')
+.get(isAuthenticated, controller.getUserInfo)
+.post(isAuthenticated, controller.ActivateAccount)
+.put(isAuthenticated, controller.updateUserInfo);
+
 // Auth
 api.route('/account/user').post(controller.LogIn);
 api.route('/account/user/:id').put(isAuthenticated, controller.ChangePassword);

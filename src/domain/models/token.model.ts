@@ -56,7 +56,8 @@ export class Token extends Model implements IToken {
                 references: {
                     model: User,
                     key: 'fk_user'
-                }
+                },
+                onDelete: 'CASCADE'
             },
             created_at: {
                 type: DataTypes.DATE,

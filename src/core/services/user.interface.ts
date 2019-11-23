@@ -11,8 +11,12 @@
 import { IUser } from "../../domain/models/user.model";
 import IService from "../service";
 import { Request } from "express";
+import { IUserExtra } from "../../domain/models/userextra.model";
 
 export default interface IUserService extends IService<IUser> {
+    activateAccount(Id: any, payload: any): Promise<IUserExtra | any>;
+    updateUserInfo(Id: any, payload: any): Promise<void>;
+    getUserInfo(Id: any): Promise<IUserExtra>;
     changePassword(Id: any, payload: any): Promise<IUser>;
     forceChangePassword(Id: any, password: string): Promise<IUser>;
     forceSignIn(user: string): Promise<string>;

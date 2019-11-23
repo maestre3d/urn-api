@@ -9,7 +9,7 @@
  */
 
 // Required libs
-import { GENERIC_ERROR, MISSING_FIELDS, NOT_FOUND, DELETED_FIELD, UPDATED_FIELD, FAILED_AUTH, INVALID_ID, FAILED_CREATE } from "../common/config/app.config";
+import { GENERIC_ERROR, MISSING_FIELDS, NOT_FOUND, DELETED_FIELD, UPDATED_FIELD, FAILED_AUTH, INVALID_ID, FAILED_CREATE, USER_DEACTIVATED } from "../common/config/app.config";
 import { Request, Response } from "express";
 import { check, sanitize, validationResult } from "express-validator";
 
@@ -25,6 +25,8 @@ import { IVerifyOptions } from "passport-local";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../common/config/types";
 import { IAuthService } from "../core/services/auth.interface";
+import { GenderToString } from "../common/enums/gender.enum";
+import { ActivityToString } from "../common/enums/activitytype.enum";
 
 @injectable()
 export class UserController implements IUserController {
@@ -99,8 +101,68 @@ export class UserController implements IUserController {
 
     async GetById(req: Request, res: Response) {
         try {
-            const users = await UserController._userService.getById(req.params.id);
-            users ? res.status(200).send({users: users}) : res.status(404).send({message: `User ${NOT_FOUND}`});
+            const user = await UserController._userService.getById(req.params.id);
+            user ? res.status(200).send({user: user}) : res.status(404).send({message: `User ${NOT_FOUND}`});
+        } catch (error) {
+            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+        }
+    }
+
+    async ActivateAccount(req: Request, res: Response) {
+        try {
+            if (!req.user) return res.status(401).send({message: MISSING_FIELDS});
+            // Date must be in string format MM/DD/YYYY
+            const payload = req.body;
+            if ( isNaN(Number(payload.weight)) || isNaN(Number(payload.height)) || isNaN(Number(payload.sex)) || isNaN(Number(payload.activity)) ) return res.status(404).send({message: MISSING_FIELDS});
+
+            if (!payload.birth || !payload.weight || !payload.height || !payload.sex || !payload.activity ) return res.status(404).send({message: MISSING_FIELDS});
+
+            // Payload.sex is the enum position sent by the client, convert it into enum value and save it into payload.gender
+            payload.gender = GenderToString(payload.sex);
+
+            // Payload.activity is the enum position sent by the client, convert it into enum value and save it into payload.activityType
+            payload.activityType = ActivityToString(payload.activity);
+
+            const userInfo = await UserController._userService.activateAccount(req.user.id, payload);
+            if (userInfo.errors) throw new Error(userInfo.errors[0].message);
+
+            userInfo && !userInfo.errors ? res.status(200).send({user: userInfo}) : res.status(400).send({message: `User info ${FAILED_CREATE}`});
+            
+        } catch (error) {
+            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+        }
+    }
+
+    async updateUserInfo(req: Request, res: Response) {
+        try {
+            if (!req.user) return res.status(401).send({message: MISSING_FIELDS});
+            
+            const payload = req.body;
+            if ( isNaN(Number(payload.weight)) || isNaN(Number(payload.height)) || isNaN(Number(payload.sex)) || isNaN(Number(payload.activity)) ) return res.status(404).send({message: MISSING_FIELDS});
+
+            if (!payload.birth || !payload.weight || !payload.height || !payload.sex || !payload.activity ) return res.status(404).send({message: MISSING_FIELDS});
+
+            // Payload.sex is the enum position sent by the client, convert it into enum value and save it into payload.gender
+            payload.gender = GenderToString(payload.sex);
+
+            // Payload.activity is the enum position sent by the client, convert it into enum value and save it into payload.activityType
+            payload.activityType = ActivityToString(payload.activity);
+
+            const response: any = await UserController._userService.updateUserInfo(req.user.id, payload);
+
+            !response.errors || response.errors.length > 0 ? res.status(200).send({message: `User Info ${UPDATED_FIELD}`}) : res.status(400).send({message: response.errors[0].message});
+        } catch (error) {
+            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+        }
+    }
+
+    async getUserInfo(req: Request, res: Response) {
+        try {
+            if (!req.user) return res.status(401).send({message: MISSING_FIELDS});
+
+            const userInfo = await UserController._userService.getUserInfo(req.user.id);
+
+            userInfo ? res.status(200).send({user: userInfo}) : res.status(404).send({message: `User ${NOT_FOUND}`});
         } catch (error) {
             res.status(400).send({message: GENERIC_ERROR, error: error.message});
         }
@@ -200,7 +262,9 @@ export class UserController implements IUserController {
 
                 if (!user) return res.status(404).send({message: FAILED_AUTH});
 
-                return res.status(200).send({user: user});
+                const userJWT = UserController._authService.generateJWTToken(user);
+
+                return res.status(200).send({jwt: userJWT});
             })(req, res);
         } catch (error) {
             res.status(400).send({message: GENERIC_ERROR, error: error.message});
@@ -222,7 +286,9 @@ export class UserController implements IUserController {
 
                 if (!user) return res.status(404).send({message: FAILED_AUTH});
 
-                return res.status(200).send({user: user});
+                const userJWT = UserController._authService.generateJWTToken(user);
+
+                return res.status(200).send({jwt: userJWT});
             })(req, res);
         } catch (error) {
             res.status(400).send({message: GENERIC_ERROR, error: error.message});

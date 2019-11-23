@@ -8,7 +8,7 @@
  * @description Handles all user operations
  */
 
-import { NOT_FOUND, APP_NAME, EMAIL_SUPPORT, FILE_DELETE_ERROR } from "../common/config/app.config";
+import { NOT_FOUND, APP_NAME, EMAIL_SUPPORT, FILE_DELETE_ERROR, USER_DEACTIVATED } from "../common/config/app.config";
 
 // Interfaces
 import IUserRepository from "../core/repositories/user.repository";
@@ -17,9 +17,17 @@ import IUserService from "../core/services/user.interface";
 import { IMailHelper } from "../core/helpers/mail.interface";
 import { IAuthService } from "../core/services/auth.interface";
 import { IS3Helper } from "../core/helpers/s3.interface";
+import { IUserExtra } from "../domain/models/userextra.model";
+import { IUserExtraRepository } from "../core/repositories/userextra.interface";
+import { INutritionHelper } from "../core/helpers/nutrition.helper";
+
+// Enums
+import { ActivityTypeEnum } from "../common/enums/activitytype.enum";
+import { BodyTypeEnum } from "../common/enums/bodytype.enum";
+import { DietTypeEnum } from "../common/enums/diettype.enum";
 
 // Misc
-import { injectable, inject } from "inversify";
+import { injectable, inject, id } from "inversify";
 import { TYPES } from "../common/config/types";
 import { Request } from "express";
 
@@ -34,21 +42,27 @@ import { ContentLocationEnum } from "../common/enums/contentlocation.enum";
 
 @injectable()
 export default class UserService implements IUserService {
-    private static _userRepository: IUserRepository;
-    private static _mailHelper: IMailHelper;
-    private static _authService: IAuthService;
-    private static _s3Helper: IS3Helper
+    private _userRepository: IUserRepository;
+    private _mailHelper: IMailHelper;
+    private _authService: IAuthService;
+    private _s3Helper: IS3Helper
+    private _userExtraRepository: IUserExtraRepository;
+    private  _nutritionHelper: INutritionHelper;
 
     constructor(
         @inject(TYPES.UserRepository) userRepository: IUserRepository,
         @inject(TYPES.MailHelper) mailHelper: IMailHelper,
         @inject(TYPES.AuthService) authService: IAuthService,
-        @inject(TYPES.S3Helper) s3Helper: IS3Helper
+        @inject(TYPES.S3Helper) s3Helper: IS3Helper,
+        @inject(TYPES.UserExtraRepository) userExtraRepository: IUserExtraRepository,
+        @inject(TYPES.NutritionHelper) nutritionHelper: INutritionHelper
     ) {
-        UserService._userRepository = userRepository;
-        UserService._mailHelper = mailHelper;
-        UserService._authService = authService;
-        UserService._s3Helper = s3Helper;
+        this._userRepository = userRepository;
+        this._mailHelper = mailHelper;
+        this._authService = authService;
+        this._s3Helper = s3Helper;
+        this._userExtraRepository = userExtraRepository;
+        this._nutritionHelper = nutritionHelper;
     }
 
     async create(payload: any): Promise<IUser> {
@@ -62,7 +76,7 @@ export default class UserService implements IUserService {
                 surname: payload.surname,
             };
     
-            return UserService._userRepository.Create(user);
+            return this._userRepository.Create(user);
         } catch (error) {
             throw error;
         }
@@ -75,7 +89,7 @@ export default class UserService implements IUserService {
             if (payload.username)   payload.username = payload.username.toLowerCase();
             if (payload.email)  payload.email = payload.email.toLowerCase();
 
-            return UserService._userRepository.Update(Id, payload);
+            return this._userRepository.Update(Id, payload);
         } catch (error) {
             throw error;
         }
@@ -83,7 +97,7 @@ export default class UserService implements IUserService {
 
     async delete(Id: any): Promise<number> {
         try {
-            return UserService._userRepository.Delete(Id);
+            return this._userRepository.Delete(Id);
         } catch (error) {
             throw error;
         }
@@ -95,7 +109,7 @@ export default class UserService implements IUserService {
             const maxItems = limit && limit > 0 ? limit : 20;
             const offset: number = Number(currentPage) * Number(maxItems);
             
-            const users = await UserService._userRepository.GetAll(maxItems, offset);
+            const users = await this._userRepository.GetAll(maxItems, offset);
             return users.rows;
         } catch (error) {
             throw error;
@@ -104,7 +118,51 @@ export default class UserService implements IUserService {
 
     async getById(Id: any): Promise<IUser> {
         try {
-            return UserService._userRepository.GetById(Id);
+            return this._userRepository.GetById(Id);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async activateAccount(Id: any, payload: any): Promise<IUserExtra | any> {
+        try {
+            let userInfo: IUserExtra = this._nutritionHelper.generateCalculus(payload.height, payload.weight, payload.birth,
+                payload.gender, payload.activityType);
+            userInfo.id = Id;
+
+            this._userRepository.Update(userInfo.id, { active: true });
+            return this._userExtraRepository.Create(userInfo);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * Updates user extra info for activation
+     * @param Id 
+     * @param payload 
+     */
+    async updateUserInfo(Id: any, payload: any): Promise<void> {
+        try {
+            payload.updated_at = new Date();
+            const user =  await this._userRepository.GetById(Id);
+            if (!user || !user.active) throw new Error(USER_DEACTIVATED);
+
+            const userInfo: IUserExtra= this._nutritionHelper.generateCalculus(payload.height, payload.weight, payload.birth,
+                payload.gender, payload.activityType);
+    
+            return this._userExtraRepository.Update(Id, userInfo);
+        } catch(error) {
+            throw error;
+        }
+    }
+
+    async getUserInfo(Id: any): Promise<IUserExtra> {
+        try {
+            const user =  await this._userRepository.GetById(Id);
+            if (!user || !user.active) throw new Error(USER_DEACTIVATED);
+
+            return this._userExtraRepository.GetById(Id);
         } catch (error) {
             throw error;
         }
@@ -114,16 +172,16 @@ export default class UserService implements IUserService {
         try {
             if ( payload.old === payload.new_password ) throw new Error('New password must be different');
 
-            const user = await UserService._userRepository.GetById(Id);
+            const user = await this._userRepository.GetById(Id);
             if (!user) throw new Error(`User ${NOT_FOUND}`);
 
-            if ( await UserService._authService.verifyPassword(payload.old_password, user.password) ) {
+            if ( await this._authService.verifyPassword(payload.old_password, user.password) ) {
                 const cipherText = await bcrypt.hash(payload.new_password, 10);
-                UserService._userRepository.Update(user.id, {password: cipherText, updated_at: new Date()});
+                this._userRepository.Update(user.id, {password: cipherText, updated_at: new Date()});
 
                 const message = `Hey, ${user.name}.\n\nYour password just changed at ${new Date().toString()}.\nPlease, feel free to contact us if it wasn't you.\n\n`+
                                 `Greetings,\n${APP_NAME}'s Team`;
-                UserService._mailHelper.sendMail([user.email], EMAIL_SUPPORT, 'Your password has changed', message, APP_NAME)
+                                this._mailHelper.sendMail([user.email], EMAIL_SUPPORT, 'Your password has changed', message, APP_NAME)
                 .then(success => success)
                 .catch(error => console.log(`Error sending email to ${user.email}`));
 
@@ -138,15 +196,15 @@ export default class UserService implements IUserService {
 
     async forceChangePassword(Id: any, password: string): Promise<IUser> {
         try {
-            const user = await UserService._userRepository.GetById(Id);
+            const user = await this._userRepository.GetById(Id);
             if (!user) throw new Error(`User ${NOT_FOUND}`);
 
             const cipherText = await bcrypt.hash(password, 10);
-            UserService._userRepository.Update(Id, { password: cipherText, updated_at: new Date() });
+            this._userRepository.Update(Id, { password: cipherText, updated_at: new Date() });
 
             const message = `Hey, ${user.name}.\n\nYour password just changed at ${new Date().toString()}.\nPlease, feel free to contact us if it wasn't you.\n\n`+
                             `Greetings,\n${APP_NAME}'s Team`;
-            UserService._mailHelper.sendMail([user.email], EMAIL_SUPPORT, 'Your password has changed', message, APP_NAME)
+                            this._mailHelper.sendMail([user.email], EMAIL_SUPPORT, 'Your password has changed', message, APP_NAME)
             .then(success => success)
             .catch(error => console.log(`Error sending email to ${user.email}`));
 
@@ -159,8 +217,8 @@ export default class UserService implements IUserService {
 
     async forceSignIn(user: string): Promise<string> {
         try {
-            const userToJWT = await UserService._userRepository.FindOne(Sequelize.or({ username: user.toLowerCase() }, { email: user.toLowerCase() }));
-            return UserService._authService.generateJWTToken(userToJWT);
+            const userToJWT = await this._userRepository.FindOne(Sequelize.or({ username: user.toLowerCase() }, { email: user.toLowerCase() }));
+            return this._authService.generateJWTToken(userToJWT);
         } catch (error) {
             throw error;
         }
@@ -171,11 +229,11 @@ export default class UserService implements IUserService {
             // Formidable
             const form = new formidable.IncomingForm();
 
-            const user = await UserService._userRepository.GetById(req.user.id);
+            const user = await this._userRepository.GetById(req.user.id);
 
             if ( user.image ) {
                 const userImage = user.image.split('/');
-                UserService._s3Helper.deleteFile(userImage[userImage.length - 1], ContentLocationEnum.USER).then(data => {
+                this._s3Helper.deleteFile(userImage[userImage.length - 1], ContentLocationEnum.USER).then(data => {
                     if (!data) {
                         throw new Error(FILE_DELETE_ERROR);
                     }
@@ -183,8 +241,8 @@ export default class UserService implements IUserService {
             }
 
 
-            const s3URL = await UserService._s3Helper.uploadImage(form, req, 2, ContentLocationEnum.USER, 250);
-            const userUpdated = await UserService._userRepository.Update(req.user.id, { image: s3URL });
+            const s3URL = await this._s3Helper.uploadImage(form, req, 2, ContentLocationEnum.USER, 250);
+            const userUpdated = await this._userRepository.Update(req.user.id, { image: s3URL });
 
             return s3URL;
             

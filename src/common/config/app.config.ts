@@ -26,3 +26,4 @@ export const JWT_EXPIRATION = '7d';
 export const FILE_ERROR = 'Error uploading file';
 export const FILE_DELETE_ERROR = 'Error deleting file';
 export const FILE_INVALID_EXTENSION = 'Not a valid file type';
+export const USER_DEACTIVATED = 'User is not activated';

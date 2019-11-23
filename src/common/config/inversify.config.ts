@@ -21,6 +21,8 @@ import { ITokenRepository } from '../../core/repositories/token.repository';
 import { IPassportConfig } from '../../core/config/passport.interface';
 import { IStorageHelper } from '../../core/helpers/storage.helper';
 import { IS3Helper } from '../../core/helpers/s3.interface';
+import { IUserExtraRepository } from '../../core/repositories/userextra.interface';
+import { INutritionHelper } from '../../core/helpers/nutrition.helper';
 
 
 // Implementations
@@ -33,6 +35,8 @@ import { TokenRepository } from '../../infrastructure/repositories/token.reposit
 import { PassportConfig } from './passport.config';
 import StorageHelper from '../helpers/storage.helper';
 import S3Helper from '../helpers/s3.helper';
+import { UserExtraRepository } from '../../infrastructure/repositories/userextra.repository';
+import NutritionHelper from '../helpers/nutrition.helper';
 
 
 const nebulaContainer = new Container();
@@ -42,8 +46,10 @@ nebulaContainer.bind<IPassportConfig>(TYPES.PassportConfig).to(PassportConfig).i
 nebulaContainer.bind<IAuthService>(TYPES.AuthService).to(AuthService);
 nebulaContainer.bind<IUserService>(TYPES.UserService).to(UserService);
 nebulaContainer.bind<ITokenRepository>(TYPES.TokenReposity).to(TokenRepository);
+nebulaContainer.bind<IUserExtraRepository>(TYPES.UserExtraRepository).to(UserExtraRepository);
 nebulaContainer.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository);
 nebulaContainer.bind<IStorageHelper>(TYPES.StorageHelper).to(StorageHelper);
 nebulaContainer.bind<IS3Helper>(TYPES.S3Helper).to(S3Helper).inSingletonScope();
+nebulaContainer.bind<INutritionHelper>(TYPES.NutritionHelper).to(NutritionHelper);
 
 export { nebulaContainer };

@@ -12,13 +12,15 @@ const TYPES = {
     Repository: Symbol.for('Repository'),
     UserRepository: Symbol.for('UserRepository'),
     TokenReposity: Symbol.for('TokenRepository'),
+    UserExtraRepository: Symbol.for('UserExtraRepository'),
     UserService: Symbol.for('UserService'),
     UserController: Symbol.for('UserController'),
     MailHelper: Symbol.for('MailHelper'),
     AuthService: Symbol.for('AuthService'),
     PassportConfig: Symbol.for('PassportConfig'),
     StorageHelper: Symbol.for('StorageHelper'),
-    S3Helper: Symbol.for('S3Helper')
+    S3Helper: Symbol.for('S3Helper'),
+    NutritionHelper: Symbol.for('NutritionHelper')
 }
 
 export { TYPES };

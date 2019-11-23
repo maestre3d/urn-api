@@ -16,6 +16,9 @@ export default interface IUserController extends IController {
     ChangePassword(req: Request, res: Response): any;
     ForceChangePassword(req: Request, res: Response): any;
     UploadProfilePicture(req: Request, res: Response): any;
+    ActivateAccount(req: Request, res: Response): any;
+    updateUserInfo(req: Request, res: Response): any;
+    getUserInfo(req: Request, res: Response): any;
     ForceSignIn(req: Request, res: Response): any;
     Facebook(req: Request, res: Response): any;
     FacebookCallback(req: Request, res: Response): any;
