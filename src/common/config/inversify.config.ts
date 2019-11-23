@@ -23,6 +23,9 @@ import { IStorageHelper } from '../../core/helpers/storage.helper';
 import { IS3Helper } from '../../core/helpers/s3.interface';
 import { IUserExtraRepository } from '../../core/repositories/userextra.interface';
 import { INutritionHelper } from '../../core/helpers/nutrition.helper';
+import { IFoodRepository } from '../../core/repositories/food.interface';
+import { IFoodService } from '../../core/services/food.interface';
+import { IFoodController } from '../../core/controllers/food.interface';
 
 
 // Implementations
@@ -38,6 +41,10 @@ import S3Helper from '../helpers/s3.helper';
 import { UserExtraRepository } from '../../infrastructure/repositories/userextra.repository';
 import NutritionHelper from '../helpers/nutrition.helper';
 
+import { FoodRepository } from '../../infrastructure/repositories/food.repository';
+import { FoodService } from '../../services/food.service';
+import { FoodController } from '../../controllers/food.controller';
+
 
 const nebulaContainer = new Container();
 nebulaContainer.bind<IUserController>(TYPES.UserController).to(UserController);
@@ -51,5 +58,9 @@ nebulaContainer.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository);
 nebulaContainer.bind<IStorageHelper>(TYPES.StorageHelper).to(StorageHelper);
 nebulaContainer.bind<IS3Helper>(TYPES.S3Helper).to(S3Helper).inSingletonScope();
 nebulaContainer.bind<INutritionHelper>(TYPES.NutritionHelper).to(NutritionHelper);
+
+nebulaContainer.bind<IFoodRepository>(TYPES.FoodRepository).to(FoodRepository);
+nebulaContainer.bind<IFoodService>(TYPES.FoodService).to(FoodService);
+nebulaContainer.bind<IFoodController>(TYPES.FoodController).to(FoodController);
 
 export { nebulaContainer };

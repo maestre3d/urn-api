@@ -10,9 +10,12 @@
 
 import { Router } from 'express';
 import UserRoutes from './user.routes';
+import FoodRoutes from './food.routes';
 import { API_URI } from '../common/config/app.config';
+
 const routes = Router();
 
 routes.use(API_URI, UserRoutes);
+routes.use(API_URI, FoodRoutes);
 
 export default routes;

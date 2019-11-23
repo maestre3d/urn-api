@@ -20,7 +20,10 @@ const TYPES = {
     PassportConfig: Symbol.for('PassportConfig'),
     StorageHelper: Symbol.for('StorageHelper'),
     S3Helper: Symbol.for('S3Helper'),
-    NutritionHelper: Symbol.for('NutritionHelper')
+    NutritionHelper: Symbol.for('NutritionHelper'),
+    FoodRepository: Symbol.for('FoodRepository'),
+    FoodController: Symbol.for('FoodController'),
+    FoodService: Symbol.for('FoodService')
 }
 
 export { TYPES };

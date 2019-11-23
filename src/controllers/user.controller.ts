@@ -95,16 +95,17 @@ export class UserController implements IUserController {
             const users = await UserController._userService.getAll(req.query.limit, req.query.page);
             users.length > 0 ? res.status(200).send({users: users}) : res.status(404).send({message: `Users ${NOT_FOUND}`});
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
 
     async GetById(req: Request, res: Response) {
         try {
+            if ( isNaN(Number(req.params.id)) ) return res.status(404).send({message: INVALID_ID});
             const user = await UserController._userService.getById(req.params.id);
             user ? res.status(200).send({user: user}) : res.status(404).send({message: `User ${NOT_FOUND}`});
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
 
@@ -129,7 +130,7 @@ export class UserController implements IUserController {
             userInfo && !userInfo.errors ? res.status(200).send({user: userInfo}) : res.status(400).send({message: `User info ${FAILED_CREATE}`});
             
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
 
@@ -152,7 +153,7 @@ export class UserController implements IUserController {
 
             !response.errors || response.errors.length > 0 ? res.status(200).send({message: `User Info ${UPDATED_FIELD}`}) : res.status(400).send({message: response.errors[0].message});
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
 
@@ -164,7 +165,7 @@ export class UserController implements IUserController {
 
             userInfo ? res.status(200).send({user: userInfo}) : res.status(404).send({message: `User ${NOT_FOUND}`});
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
 
@@ -184,7 +185,7 @@ export class UserController implements IUserController {
             })(req, res);
 
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
 
@@ -197,7 +198,7 @@ export class UserController implements IUserController {
             jwtUser ? res.status(200).send({jwt: jwtUser}) : res.status(404).send({message: FAILED_AUTH});
 
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
     
@@ -212,7 +213,7 @@ export class UserController implements IUserController {
             user ? res.status(200).send({user: user}) : res.status(400).send({message: FAILED_AUTH});
 
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
 
@@ -226,7 +227,7 @@ export class UserController implements IUserController {
             user ? res.status(200).send({user: user}) : res.status(400).send({message: FAILED_AUTH});
 
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
 
@@ -239,7 +240,7 @@ export class UserController implements IUserController {
             const uploaded = await UserController._userService.uploadProfilePicture(req);
             res.status(200).send({message: uploaded});
         } catch (error) {
-            res.status(400).send({message: GENERIC_ERROR, error: error.message});
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
 

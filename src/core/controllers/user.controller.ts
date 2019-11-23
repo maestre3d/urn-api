@@ -9,7 +9,7 @@
  */
 
 import IController from "../controller";
-import { Request, Response } from "express-serve-static-core";
+import { Request, Response } from "express";
 
 export default interface IUserController extends IController {
     LogIn(req: Request, res: Response): any;

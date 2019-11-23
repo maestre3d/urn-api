@@ -8,7 +8,7 @@
  * @description Exports a generic controller with basic actions
  */
 
-import { Request, Response } from "express-serve-static-core";
+import { Request, Response } from "express";
 
 export default interface IController {
     Create(req: Request, res: Response): any;
