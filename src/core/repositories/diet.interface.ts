@@ -5,9 +5,10 @@
  * @license Confidential This file belongs to Damascus Engineering intellectual property,
  * any unauthorized distribution of this file will be punished by law.
  * @author Alonso Ruiz
- * @description Food controller interface
+ * @description Diet repository interface
  */
 
-import IController from "../controller";
+import { IRepository } from "../repository";
+import { IDiet } from "../../domain/models/diet.model";
 
-export interface IFoodController extends IController { }
+export interface IDietRepository extends IRepository<IDiet> { }

@@ -4,6 +4,7 @@ import { injectable, inject } from "inversify";
 import { GENERIC_ERROR, MISSING_FIELDS, FAILED_CREATE, INVALID_ID, UPDATED_FIELD, DELETED_FIELD, NOT_FOUND } from "../common/config/app.config";
 import { IFoodService } from "../core/services/food.interface";
 import { TYPES } from "../common/config/types";
+import { FoodTypeToString } from "../common/enums/foodtype.enum";
 
 @injectable()
 export class FoodController implements IFoodController {
@@ -54,7 +55,8 @@ export class FoodController implements IFoodController {
     
     async GetAll(req: Request, res: Response) {
         try {
-            const foods = await FoodController._foodService.getAll(req.query.limit, req.query.page, req.query.category);
+            const category = FoodTypeToString(req.query.category);
+            const foods = await FoodController._foodService.getAll(req.query.limit, req.query.page, category);
             return foods.length > 0 ? res.status(200).send({foods: foods}) : res.status(404).send({message: `Foods ${NOT_FOUND}`});
         } catch (error) {
             res.status(500).send({message: GENERIC_ERROR, error: error.message});
@@ -70,15 +72,5 @@ export class FoodController implements IFoodController {
             res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
-
-    async GetByCategory(req: Request, res: Response) {
-        try {
-            const foods = await FoodController._foodService.getAll(req.query.limit, req.query.page);
-            return foods.length > 0 ? res.status(200).send({foods: foods}) : res.status(404).send({message: `Foods ${NOT_FOUND}`});
-        } catch (error) {
-            res.status(500).send({message: GENERIC_ERROR, error: error.message});
-        }
-    }
-
     
 }

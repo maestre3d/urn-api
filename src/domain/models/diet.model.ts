@@ -5,44 +5,50 @@
  * @license Confidential This file belongs to Damascus Engineering intellectual property,
  * any unauthorized distribution of this file will be punished by law.
  * @author Alonso Ruiz
- * @description Exports FoodCategory class / interface model
+ * @description Exports Diet class / interface model
  */
 
 import { Model, DataTypes } from "sequelize";
 import { PoolInstance } from "../../infrastructure/pool";
 
-export interface IFoodCategory {
-    id?: number,
-    name: string,
-    description?: string
+export interface IDiet {
+    id?: number;
+    total_calories: number;
+    json_url?: string;
+    created_at?: Date;
 }
 
-export class FoodCategory extends Model implements IFoodCategory {
+export class Diet extends Model implements IDiet {
     id?: number;
-    name!: string;
-    description?: string;
+    total_calories!: number;
+    json_url?: string;
+    created_at?: Date;
 
     public static startModel() {
         this.init({
             id: {
                 type: DataTypes.BIGINT,
-                autoIncrement: true,
                 allowNull: false,
-                primaryKey: true
+                primaryKey: true,
+                autoIncrement: true,
             },
-            name: {
-                type: DataTypes.STRING,
+            total_calories: {
+                type: DataTypes.SMALLINT,
                 allowNull: false
             },
-            description: {
-                type: DataTypes.STRING,
+            json_url: {
+                type: DataTypes.JSON,
                 allowNull: true,
                 defaultValue: null
+            },
+            created_at: {
+                type: DataTypes.DATE,
+                allowNull: true,
+                defaultValue: new Date()
             }
         }, {
             schema: 'client',
-            tableName: 'food_category',
-            underscored: true,
+            tableName: 'diet',
             timestamps: false,
             sequelize: PoolInstance.getInstance()
         })

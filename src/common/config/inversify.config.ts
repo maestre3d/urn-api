@@ -26,6 +26,10 @@ import { INutritionHelper } from '../../core/helpers/nutrition.helper';
 import { IFoodRepository } from '../../core/repositories/food.interface';
 import { IFoodService } from '../../core/services/food.interface';
 import { IFoodController } from '../../core/controllers/food.interface';
+import { IDietController } from '../../core/controllers/diet.interface';
+import { IDietService } from '../../core/services/diet.interface';
+import { IDietUserRepository } from '../../core/repositories/dietuser.interface';
+import { IDietRepository } from '../../core/repositories/diet.interface';
 
 
 // Implementations
@@ -44,6 +48,10 @@ import NutritionHelper from '../helpers/nutrition.helper';
 import { FoodRepository } from '../../infrastructure/repositories/food.repository';
 import { FoodService } from '../../services/food.service';
 import { FoodController } from '../../controllers/food.controller';
+import { DietRepository } from '../../infrastructure/repositories/diet.repository';
+import { DietUserRepository } from '../../infrastructure/repositories/dietuser.repository';
+import { DietService } from '../../services/diet.service';
+import { DietController } from '../../controllers/diet.controller';
 
 
 const nebulaContainer = new Container();
@@ -62,5 +70,10 @@ nebulaContainer.bind<INutritionHelper>(TYPES.NutritionHelper).to(NutritionHelper
 nebulaContainer.bind<IFoodRepository>(TYPES.FoodRepository).to(FoodRepository);
 nebulaContainer.bind<IFoodService>(TYPES.FoodService).to(FoodService);
 nebulaContainer.bind<IFoodController>(TYPES.FoodController).to(FoodController);
+
+nebulaContainer.bind<IDietRepository>(TYPES.DietRepository).to(DietRepository);
+nebulaContainer.bind<IDietUserRepository>(TYPES.DietUserRepository).to(DietUserRepository);
+nebulaContainer.bind<IDietService>(TYPES.DietService).to(DietService);
+nebulaContainer.bind<IDietController>(TYPES.DietController).to(DietController);
 
 export { nebulaContainer };

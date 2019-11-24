@@ -12,4 +12,5 @@ export interface IStorageHelper {
     createDirectory(filePath: string): Promise<any>;
     renameFile(filePath: string, newFilePath: string): Promise<string>;
     deleteFile(filePath: string): Promise<any>;
+    readFile(filePath: string): Promise<Buffer>;
 }

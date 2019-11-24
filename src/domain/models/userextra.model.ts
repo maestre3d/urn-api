@@ -1,3 +1,13 @@
+/**
+ * @name Nebula
+ * @version 0.0.1a
+ * @copyright Damascus Engineering. 2019 All rights reserved.
+ * @license Confidential This file belongs to Damascus Engineering intellectual property,
+ * any unauthorized distribution of this file will be punished by law.
+ * @author Alonso Ruiz
+ * @description Exports UserInfo class / interface model
+ */
+
 import { Model, DataTypes } from 'sequelize';
 import { PoolInstance } from "../../infrastructure/pool";
 import { GenderEnum } from "../../common/enums/gender.enum";
@@ -10,7 +20,7 @@ export interface IUserExtra {
     id?: number,
     bmi: number,
     bmr?: number | null,
-    tee?: number | null,
+    tee: number | null,
     ibw?: number | null,
     weight: number,
     height: number,
@@ -25,7 +35,7 @@ export class UserExtra extends Model implements IUserExtra {
     public id!: number;
     public bmi!: number;
     public bmr?: number | null;
-    public tee?: number | null;
+    public tee!: number;
     public ibw?: number | null;
     public weight!: number;
     public height!: number;

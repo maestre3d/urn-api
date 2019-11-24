@@ -1,0 +1,15 @@
+vegetables - vegetales
+fruits - frutas
+cereals - cereales sin grasa
+cerealswfat - cereales con grasa
+legumes - leguminosas
+animal - Alimento de origen animal muy baja grasa
+animallfat  - Alimento de origen animal bajo en grasa
+animalmfat - Alimento de origen animal moderado en grasa
+animalhfat - Alimento de origen animal alto en grasa
+dairy - Leche/Lacteo entero
+dairyskim - Leche/Lacteo descremado
+oils - aceites y grasas sin proteina
+oilswprotein - aceits y grasas con proteina
+sugars - azucares sin grasa
+sugarswfat - azucares con grasa

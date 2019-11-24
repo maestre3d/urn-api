@@ -1,7 +1,7 @@
 import { Model, DataTypes } from "sequelize";
-import { PoolInstance } from "../infrastructure/pool";
-import { Food } from "./models/food.model";
-import { FoodCategory } from "./models/foodcategory.model";
+import { PoolInstance } from "../../infrastructure/pool";
+import { Food } from "./food.model";
+import { FoodCategory } from "./foodcategory.model";
 
 export interface IFoodList {
     fk_food: number;

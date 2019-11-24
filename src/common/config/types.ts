@@ -23,7 +23,11 @@ const TYPES = {
     NutritionHelper: Symbol.for('NutritionHelper'),
     FoodRepository: Symbol.for('FoodRepository'),
     FoodController: Symbol.for('FoodController'),
-    FoodService: Symbol.for('FoodService')
+    FoodService: Symbol.for('FoodService'),
+    DietRepository: Symbol.for('DietRepository'),
+    DietUserRepository: Symbol.for('DietUserRepository'),
+    DietService: Symbol.for('DietService'),
+    DietController: Symbol.for('DietController')
 }
 
 export { TYPES };

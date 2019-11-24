@@ -17,9 +17,16 @@ export default class StorageHelper implements IStorageHelper {
 
     async createDirectory(filePath: string): Promise<boolean> {
         return new Promise((resolve: any, reject: any) => {
-            fs.mkdir(filePath, (err) => {
-                err ? reject(err) : resolve(true);
-            });
+            fs.exists(filePath, (exists) => {
+                if (!exists) {
+                    fs.mkdir(filePath, (err) => {
+                        err ? reject(err) : resolve(true);
+                    });
+                }
+                
+                resolve(true);
+            })
+
         });
     }
 
@@ -36,6 +43,14 @@ export default class StorageHelper implements IStorageHelper {
             fs.unlink(filePath, (err) => {
                 err ? reject(err) : resolve(true);
             });
+        });
+    }
+
+    async readFile(filePath: string): Promise<Buffer> {
+        return new Promise((resolve: any, reject: any) => {
+            fs.readFile(filePath, (err, data) => {
+                err ? reject(err) : resolve(data);
+            })
         });
     }
 
