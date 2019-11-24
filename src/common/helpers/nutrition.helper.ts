@@ -104,6 +104,7 @@ export default class NutritionHelper implements INutritionHelper {
             gender: gender,
             bmi: this.generateBMI(weight, height),
             ibw: IBW,
+            tee: 0,
             bmr: this.generateBMR(age, gender, IBW),
             birth: new Date(birth),
             activity_type: activity_type,
