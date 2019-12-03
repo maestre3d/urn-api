@@ -63,6 +63,7 @@ app.use(lusca.xssProtection(true));
 // TODO - Change public policy to AWS Cloudfront/VPC
 app.use(Headers);
 app.options('*', cors())
+app.use(cors())
 
 // Routes
 app.use(Routes);
