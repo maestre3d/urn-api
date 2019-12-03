@@ -11,10 +11,15 @@
 import { Request, Response, NextFunction } from 'express';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-Width, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT, OPTIONS');
-    res.header('Allow', 'GET, POST, DELETE, PUT, OPTIONS');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-Width, Content-Type, Accept, Access-Control-Allow-Request-Method, Access-Control-Allow-Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT, OPTIONS');
+    res.setHeader('Allow', 'GET, POST, DELETE, PUT, OPTIONS');
 
-    next();
+    if ('OPTIONS' == req.method) {
+    	res.sendStatus(200);
+    }
+    else {
+    	next();
+    }
 }

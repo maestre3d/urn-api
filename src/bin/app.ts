@@ -18,7 +18,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import lusca from "lusca";
 import passport from "passport";
-import cors from "cors";
 
 // Custom libs
 import { nebulaContainer } from '../common/config/inversify.config';
@@ -62,8 +61,7 @@ app.use(lusca.xssProtection(true));
 // CORS
 // TODO - Change public policy to AWS Cloudfront/VPC
 app.use(Headers);
-app.options('*', cors())
-app.use(cors())
+
 
 // Routes
 app.use(Routes);
