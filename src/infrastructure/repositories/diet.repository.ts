@@ -50,7 +50,9 @@ export class DietRepository implements IDietRepository {
             total_calories: {
                 [Op.gte]: args
             }
-        } })
+        },
+        order: [['total_calories', 'ASC']]
+        })
         .then(diet => diet).catch(e => e);
     }
 
