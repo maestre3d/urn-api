@@ -276,7 +276,7 @@ export class UserController implements IUserController {
                 if (!user) return res.status(404).send({message: FAILED_AUTH});
 
                 const userJWT = UserController._authService.generateJWTToken(user);
-                return res.redirect(303, 'http://localhost:4200/signin?token=' + userJWT)
+                return res.redirect(303, 'https://urn.damascus-engineering.com/signin?token=' + userJWT)
 
                 // return res.status(200).send({jwt: userJWT});
             })(req, res);
@@ -302,7 +302,7 @@ export class UserController implements IUserController {
 
                 const userJWT = UserController._authService.generateJWTToken(user);
 
-                return res.redirect(303, 'http://localhost:4200/signin?token=' + userJWT)
+                return res.redirect(303, 'https://urn.damascus-engineering.com/signin?token=' + userJWT)
                 // return res.status(200).send({jwt: userJWT});
             })(req, res);
         } catch (error) {
