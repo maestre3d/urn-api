@@ -20,6 +20,7 @@ export default interface IUserController extends IController {
     updateUserInfo(req: Request, res: Response): any;
     getUserInfo(req: Request, res: Response): any;
     ForceSignIn(req: Request, res: Response): any;
+    RefreshSession(req: Request, res: Response): any;
     Facebook(req: Request, res: Response): any;
     FacebookCallback(req: Request, res: Response): any;
     Google(req: Request, res: Response): any;

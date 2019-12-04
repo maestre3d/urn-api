@@ -224,6 +224,20 @@ export default class UserService implements IUserService {
         }
     }
 
+    /**
+     * 
+     * @param user Payload
+     * @returns JWT
+     */
+    async refreshSession(Id: any): Promise<string> {
+        try {
+            const userRefreshed = await this._userRepository.GetById(Id);
+            return this._authService.generateJWTToken(userRefreshed);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async uploadProfilePicture(req: Request): Promise<string> {
         try {
             // Formidable

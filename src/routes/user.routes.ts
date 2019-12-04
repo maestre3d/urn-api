@@ -51,5 +51,7 @@ api.route('/connect/google/callback').get(controller.GoogleCallback);
 
 // Admin - Support
 api.route('/support/account/user').post(isAuthenticated, isInRole(['ROLE_ADMIN', 'ROLE_SUPPORT']), controller.ForceSignIn);
+// Refresh JWT
+api.route('/account/refresh').get(isAuthenticated, controller.RefreshSession)
 
 export default api;

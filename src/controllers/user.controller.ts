@@ -201,6 +201,18 @@ export class UserController implements IUserController {
             res.status(500).send({message: GENERIC_ERROR, error: error.message});
         }
     }
+
+    async RefreshSession(req: Request, res: Response) {
+        try {
+            if (!req.user.id) return res.status(404).send({message: MISSING_FIELDS});
+
+            const jwtUser = await UserController._userService.refreshSession(req.user.id);
+            jwtUser ? res.status(200).send({jwt: jwtUser}) : res.status(404).send({message: FAILED_AUTH});
+
+        } catch (error) {
+            res.status(500).send({message: GENERIC_ERROR, error: error.message});
+        }
+    }
     
     async ChangePassword(req: Request, res: Response) {
         try {

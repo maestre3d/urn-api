@@ -20,5 +20,6 @@ export default interface IUserService extends IService<IUser> {
     changePassword(Id: any, payload: any): Promise<IUser>;
     forceChangePassword(Id: any, password: string): Promise<IUser>;
     forceSignIn(user: string): Promise<string>;
+    refreshSession(Id: any): Promise<string>;
     uploadProfilePicture(req: Request): Promise<string>;
 }
