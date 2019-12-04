@@ -25,7 +25,7 @@ api.route('/diet/upload/:id')
 .put(controller.UploadDietJSON)
 
 api.route('/account/diet')
-.patch(isAuth, controller.GenerateUserDiet)
+.put(isAuth, controller.GenerateUserDiet)
 .get(isAuth, controller.GetUserDiet);
 
 export default api;
